@@ -9,29 +9,15 @@ angular.module('myApp.drivers', ['ngRoute'])
   });
 }])
 
-.controller('driversCtrl', function($scope) {
-  $scope.driversList = [
-    {
-        Driver: {
-            givenName: 'Sebastian',
-            familyName: 'Vettel'
-        },
-        points: 322,
-        nationality: "German",
-        Constructors: [
-            {name: "Red Bull"}
-        ]
-    },
-    {
-        Driver: {
-        givenName: 'Fernando',
-            familyName: 'Alonso'
-        },
-        points: 207,
-        nationality: "Spanish",
-        Constructors: [
-            {name: "Ferrari"}
-        ]
-    }
-  ];
+.controller('driversCtrl', function($http, $scope) {
+  $scope.nameFilter = null;
+  $scope.driversList = [];
+
+  $http({
+    method: 'JSONP',
+    url: 'http://ergast.com/api/f1/2013/driverStandings.json?callback=JSON_CALLBACK'
+  })
+  .then(function(response) {
+    $scope.driversList = response.data.MRData.StandingsTable.StandingsLists[0].DriverStandings;
+  });
 });
